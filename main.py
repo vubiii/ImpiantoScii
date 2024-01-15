@@ -22,7 +22,22 @@ class NeoManager:
             print("Connessione chiusa.")
 
     def visualizza_piste(self):
-        pass
+        dizionario_colori = {"verde": 0, "blu": 1, "rossa": 2, "nera": 3}
+        piste_ordine = []
+
+        with self.driver.session() as session:
+            risultato = session.run("MATCH (n:SegmentoPista) RETURN DISTINCT n.pista, n.colore;")
+            piste = [record.values() for record in risultato]
+
+            # Ordina la lista piste in base ai valori del dizionario_colori
+            piste_ordinate = sorted(piste, key=lambda x: dizionario_colori.get(x[1], float('inf')))
+
+            for pista in piste_ordinate:
+                valore_pista = dizionario_colori[pista[1]]
+                piste_ordine.append((pista[0], valore_pista))
+                print(pista)
+
+            return piste_ordine
 
     def piste_aperte(self):
         pass
