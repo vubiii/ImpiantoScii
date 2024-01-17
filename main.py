@@ -34,7 +34,6 @@ class NeoManager:
             relationship = relationships[i]
             lunghezza_totale += relationship["lunghezza"]
 
-        # Stampa info della pista + lunghezza totale
         last_node = nodes[-1]
         print(f"Percorso più difficile: {last_node['pista']} ({last_node['colore']}), Lunghezza totale: {lunghezza_totale}")
 
@@ -86,23 +85,12 @@ class NeoManager:
             pista = rel["pista"]
             #print(f"Segmento Pista: {pista}, Difficoltà: {difficoltà_rel}")
 
-            # Aggiorna la difficoltà minima
             if somma_difficolta < min_difficulty:
                 min_difficulty = somma_difficolta
                 min_difficulty_pista = pista
 
-        #print("Difficoltà totale del percorso:", somma_difficolta)
-        #print("Difficoltà minima del percorso:", min_difficulty)
-        #print("Segmento Pista con difficoltà minima:", min_difficulty_pista)
-
         # Stampa solo la pista con difficoltà minima
         print("Pista con la difficoltà minima:", min_difficulty_pista)
-
-
-
-
-    def stampa_path(self, path):
-        print("Percorso:", path)
 
     def visualizza_piste(self):
         with self.driver.session() as session:
@@ -116,7 +104,8 @@ class NeoManager:
             print("Cerco le piste aperte")
             risultato = session.run("MATCH (n:SegmentoPista)-[r:SEGUITE_DA]->(m) WHERE r.stato = 0 RETURN DISTINCT r.pista AS nome_pista;")
             piste_chiuse = [record["nome_pista"] for record in risultato]
-            print(f"\nLe piste chiuse sono: {', '.join(piste_chiuse)}")
+            #print(f"\nLe piste chiuse sono: {', '.join(piste_chiuse)}")
+            # Commentato
 
             piste_totali = self.visualizza_piste()
 
