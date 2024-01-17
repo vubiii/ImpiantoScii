@@ -45,7 +45,59 @@ class NeoManager:
         pass
 
     def difficolta_percorso(self):
-        print("Difficoltà percorso")
+        print("Trovo il percorso più facile su due impianti")
+        print("Ecco gli impianti :")
+
+        dizionario_scelta = {}
+        impianti = self.trova_impianti()
+
+        for i, impianto in enumerate(impianti):
+            print(f"{i} - {impianto}")
+            dizionario_scelta[i] = impianto
+
+        scelta = int(input("Inserire la scelta:"))
+
+        with self.driver.session() as session:
+            impianto_inizio = dizionario_scelta[scelta]
+            print("Cerco il percorso più facile")
+            risultato = session.run(
+                """
+                MATCH (impianto:ImpiantoRisalita {nome: $impianto_inizio, tipo: "fine"})
+                MATCH (impianto)-[:SERVE*]->(start:SegmentoPista {inizio: true})
+                MATCH (end:SegmentoPista {fine: true, pista: start.pista})
+                MATCH path = allShortestPaths((start)-[:SEGUITE_DA*]-(end))
+                RETURN path;
+                """,
+                impianto_inizio=impianto_inizio,
+            )
+
+            for record in risultato:
+                path = record["path"]
+                self.calcola_difficolta_percorso(path)
+    
+    def calcola_difficolta_percorso(self, path):
+        somma_difficolta = 0
+        min_difficulty = float('inf')  
+        min_difficulty_pista = None
+
+        for rel in path.relationships:
+            difficoltà_rel = rel["difficolta"]
+            if difficoltà_rel == "facile":
+                somma_difficolta += 0
+            elif difficoltà_rel == "media":
+                somma_difficolta += 1
+            elif difficoltà_rel == "difficile":
+                somma_difficolta += 2
+
+            pista = rel["pista"]
+            print(f"Segmento Pista: {pista}, Difficoltà: {difficoltà_rel}")
+
+         
+            if somma_difficolta < min_difficulty:
+                min_difficulty = somma_difficolta
+                min_difficulty_pista = pista
+
+        print("Pista con la difficoltà minima:", min_difficulty_pista)
 
 
 if __name__ == "__main__":
