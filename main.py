@@ -84,15 +84,19 @@ class NeoManager:
                 somma_difficolta += 2
 
             pista = rel["pista"]
-            print(f"Segmento Pista: {pista}, Difficoltà: {difficoltà_rel}")
+            #print(f"Segmento Pista: {pista}, Difficoltà: {difficoltà_rel}")
 
-         
+            # Aggiorna la difficoltà minima
             if somma_difficolta < min_difficulty:
                 min_difficulty = somma_difficolta
                 min_difficulty_pista = pista
 
-        print("Pista con la difficoltà minima:", min_difficulty_pista)
+        #print("Difficoltà totale del percorso:", somma_difficolta)
+        #print("Difficoltà minima del percorso:", min_difficulty)
+        #print("Segmento Pista con difficoltà minima:", min_difficulty_pista)
 
+        # Stampa solo la pista con difficoltà minima
+        print("Pista con la difficoltà minima:", min_difficulty_pista)
 
 
 
